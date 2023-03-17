@@ -1,0 +1,10 @@
+### 查询课程信息：
+POST http://{{content_host}}/content/course/list?pageNumber=1&pageSize=6
+Content-Type: application/json
+
+{
+  "auditStatus": "202004",
+  "courseName": "java",
+  "publishStatus": "203001"
+}
+

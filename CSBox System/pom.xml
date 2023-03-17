@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 依赖全局父工程 -->
+    <parent>
+        <groupId>wiki.csbox</groupId>
+        <artifactId>CSBox-Parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../CSBox Parent</relativePath>
+    </parent>
+
+    <!-- System工程唯一坐标 -->
+    <artifactId>CSBox-System</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>CSBox-System</name>
+    <description>System父工程，提供系统偶配置相关API！</description>
+    <packaging>pom</packaging>
+
+    <!-- 系统工程模块 -->
+    <modules>
+        <module>system-api</module>
+        <module>system-service</module>
+        <module>system-model</module>
+    </modules>
+</project>
