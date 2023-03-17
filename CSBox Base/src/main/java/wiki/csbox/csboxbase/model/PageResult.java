@@ -22,9 +22,12 @@ public class PageResult<T> implements Serializable {
     // 数据列表：
     private List<T> data;
 
-    // 数据记录总数：
-    private long counts;
+    //当前页码
+    private long pageNo;
 
     // 每页记录数：
     private long pageSize;
+
+    // 数据记录总数：
+    private long counts;
 }

@@ -27,6 +27,12 @@
 
         <dependency>
             <groupId>wiki.csbox</groupId>
+            <artifactId>content-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>wiki.csbox</groupId>
             <artifactId>content-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

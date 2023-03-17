@@ -16,11 +16,12 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class QueryCourseParamsDto {
-    // 课程审核状态：
-    private String auditStatus;
 
     // 课程名称：
     private String courseName;
+
+    // 课程审核状态：
+    private String auditStatus;
 
     // 课程发布状态：
     private String publishStatus;
