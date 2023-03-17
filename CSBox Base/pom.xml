@@ -12,11 +12,10 @@
         <relativePath>../CSBox Parent</relativePath>
     </parent>
 
-    <groupId>wiki.csbox</groupId>
     <artifactId>CSBox-Base</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>CSBox Base</name>
-    <description>CSBox Base</description>
+    <description>CSBox Video 项目Base模块</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -35,6 +34,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
         </dependency>
         <!-- servlet Api 依赖 -->
         <dependency>
@@ -46,6 +46,7 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -55,6 +56,7 @@
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
+            <version>1.5.20</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -111,9 +113,15 @@
             <artifactId>javase</artifactId>
             <version>3.3.3</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
         </dependency>
 
     </dependencies>

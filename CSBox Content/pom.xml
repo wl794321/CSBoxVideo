@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Paren父工程依赖坐标 -->
+    <parent>
+        <groupId>wiki.csbox</groupId>
+        <artifactId>CSBox-Parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../CSBox Parent</relativePath>
+    </parent>
+    <!-- 当前Content工程Id -->
+    <artifactId>CSBox-Content</artifactId>
+    <packaging>pom</packaging>
+
+    <!-- Content工程子模块 -->
+    <modules>
+        <module>content-api</module>
+        <module>content-model</module>
+        <module>content-service</module>
+    </modules>
+</project>

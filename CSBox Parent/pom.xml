@@ -14,7 +14,7 @@
     <artifactId>CSBox-Parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>CSBox Parent</name>
-    <description>CSBox Parent</description>
+    <description>CSBox Video 工程项目父工程！</description>
     <packaging>pom</packaging>
 
     <properties>
@@ -34,22 +34,15 @@
         <commons-lang.version>2.6</commons-lang.version>
         <minio.version>8.4.3</minio.version>
         <xxl-job-core.version>2.3.1</xxl-job-core.version>
-        <swagger-annotations.version>1.5.20</swagger-annotations.version>
+        <swagger-annotations.version>1.5.22</swagger-annotations.version>
         <commons-lang3.version>3.10</commons-lang3.version>
         <okhttp.version>4.8.1</okhttp.version>
-        <swagger-spring-boot-starter.version>1.9.0.RELEASE</swagger-spring-boot-starter.version>
         <elasticsearch.version>7.12.1</elasticsearch.version>
+        <knife4j.version>2.0.6</knife4j.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -57,6 +50,15 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
@@ -64,28 +66,39 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
             <!-- lombok，简化类的构建-->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${org.projectlombok.version}</version>
             </dependency>
+
             <!-- mapstruct 代码生成器，简化java bean之间的映射 -->
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-jdk8</artifactId>
                 <version>${org.mapstruct.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${org.mapstruct.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-annotations.version}</version>
             </dependency>
+
             <!-- Servlet 容器管理 -->
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -93,60 +106,70 @@
                 <version>${javax.servlet-api.version}</version>
                 <scope>provided</scope>
             </dependency>
+
             <!-- fastjson ，json解析工具 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
+
             <!-- druid 连接池管理 -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid-spring-boot-starter.version}</version>
             </dependency>
+
             <!-- mySQL数据库驱动包管理 -->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql-connector-java.version}</version>
             </dependency>
+
             <!-- mybatis plus 集成Spring Boot启动器 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus-boot-starter.version}</version>
             </dependency>
+
             <!-- mybatis plus 代码生成器 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-generator</artifactId>
                 <version>${mybatis-plus-boot-starter.version}</version>
             </dependency>
+
             <!-- 工具类管理 -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons-lang.version}</version>
             </dependency>
+
             <!-- 分布式文件系统 minIO的客户端API包 -->
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
             </dependency>
+
             <!--google推荐的一套工具类库-->
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>25.0-jre</version>
             </dependency>
+
             <!--分布式任务调度-->
             <dependency>
                 <groupId>com.xuxueli</groupId>
                 <artifactId>xxl-job-core</artifactId>
                 <version>${xxl-job-core.version}</version>
             </dependency>
+
             <!--Spring boot单元测试-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -160,30 +183,45 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>com.spring4all</groupId>
-                <artifactId>swagger-spring-boot-starter</artifactId>
-                <version>${swagger-spring-boot-starter.version}</version>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <!--在引用时请在maven中央仓库搜索2.X最新版本号-->
+                <version>${knife4j.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
                 <version>${elasticsearch.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.elasticsearch</groupId>
                 <artifactId>elasticsearch</artifactId>
                 <version>${elasticsearch.version}</version>
+            </dependency>
+
+            <!-- Spring Boot DevTools 热部署 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>runtime</scope>
+                <optional>true</optional>
             </dependency>
         </dependencies>
     </dependencyManagement>
