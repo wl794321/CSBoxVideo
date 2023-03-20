@@ -18,6 +18,7 @@ import wiki.csbox.contentservice.mapper.CourseBaseMapper;
 import wiki.csbox.contentservice.mapper.CourseCategoryMapper;
 import wiki.csbox.contentservice.mapper.CourseMarketMapper;
 import wiki.csbox.contentservice.service.CourseBaseInfoService;
+import wiki.csbox.csboxbase.exception.CSBoxVideoException;
 import wiki.csbox.csboxbase.model.PageParams;
 import wiki.csbox.csboxbase.model.PageResult;
 
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static wiki.csbox.csboxbase.constant.CourseBaseInfoConstant.*;
+import static wiki.csbox.csboxbase.constant.CommonError.OBJECT_NULL;
 
 /**
  * @author Krian
@@ -81,9 +83,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         // 参数校验：
         if (StringUtils.isBlank(addCourseDto.getName())) {
             // 抛出异常：
-            throw new RuntimeException("课程名称为空");
-//            XueChengPlusException.cast("课程名称为空");
-//            XueChengPlusException.cast(CommonError.PARAMS_ERROR);
+            // throw new RuntimeException("课程名称为空");
+            CSBoxVideoException.cast(OBJECT_NULL.getErrMessage());
         }
 
         if (StringUtils.isBlank(addCourseDto.getMt())) {

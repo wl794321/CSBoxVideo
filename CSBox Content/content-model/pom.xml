@@ -13,6 +13,12 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>wiki.csbox</groupId>
+            <artifactId>CSBox-Base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <!-- 存在MyBatisPlus注解添加相关注解保证不报错 -->
         <dependency>
             <groupId>com.baomidou</groupId>

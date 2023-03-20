@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import wiki.csbox.csboxbase.constant.ValidationGroups;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -23,12 +24,14 @@ import javax.validation.constraints.Size;
 @ApiModel(value = "AddCourseDto", description = "新增课程基本信息")
 public class AddCourseDto {
 
-    @NotEmpty(message = "课程名称不能为空")
+    // 分组校验：
+    // @NotEmpty(message = "新增课程名称不能为空", groups = {ValidationGroups.Insert.class})
+    // @NotEmpty(message = "更新课程名称不能为空", groups = {ValidationGroups.Update.class})
     @ApiModelProperty(value = "课程名称", required = true)
     private String name;
 
     @NotEmpty(message = "适用人群不能为空")
-    @Size(message = "适用人群内容过少", min = 10)
+    @Size(message = "适用人群人数过少", min = 10)
     @ApiModelProperty(value = "适用人群", required = true)
     private String users;
 
@@ -64,7 +67,6 @@ public class AddCourseDto {
     private Float price;
     @ApiModelProperty(value = "原价")
     private Float originalPrice;
-
 
     @ApiModelProperty(value = "qq")
     private String qq;

@@ -2,12 +2,14 @@ package wiki.csbox.contentapi.api;
 
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wiki.csbox.contentmodel.model.dto.AddCourseDto;
 import wiki.csbox.contentmodel.model.dto.CourseBaseInfoDto;
 import wiki.csbox.contentmodel.model.dto.QueryCourseParamsDto;
 import wiki.csbox.contentmodel.model.po.CourseBase;
 import wiki.csbox.contentservice.service.CourseBaseInfoService;
+import wiki.csbox.csboxbase.constant.ValidationGroups;
 import wiki.csbox.csboxbase.model.PageParams;
 import wiki.csbox.csboxbase.model.PageResult;
 
@@ -46,9 +48,17 @@ public class CourseBaseInfoController {
             @ApiImplicitParam(name = "addCourseDto", value = "新增课程信息")
     })
     @PostMapping("/course")
-    public CourseBaseInfoDto create(@RequestBody AddCourseDto addCourseDto) {
+    public CourseBaseInfoDto create(@RequestBody @Valid AddCourseDto addCourseDto) {
         // 获取用户所属机构Id：
         Long id = 1232141425L;
         return courseBaseInfoService.createCourseBase(id, addCourseDto);
     }
+//    public CourseBaseInfoDto create(@RequestBody @Validated({
+//            ValidationGroups.Insert.class,
+//            ValidationGroups.Update.class
+//    }) AddCourseDto addCourseDto) {
+//        // 获取用户所属机构Id：
+//        Long id = 1232141425L;
+//        return courseBaseInfoService.createCourseBase(id, addCourseDto);
+//    }
 }
