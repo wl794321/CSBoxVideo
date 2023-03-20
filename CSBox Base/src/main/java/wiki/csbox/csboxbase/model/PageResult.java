@@ -20,7 +20,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class PageResult<T> implements Serializable {
     // 数据列表：
-    private List<T> data;
+    private List<T> items;
 
     //当前页码
     private long pageNo;

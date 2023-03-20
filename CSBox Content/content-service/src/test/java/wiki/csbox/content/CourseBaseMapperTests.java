@@ -53,7 +53,6 @@ public class CourseBaseMapperTests {
         List<CourseBase> records = courseBasePage.getRecords();
 
         // 封装返回数据：
-        pageResult.setPageSize(1).setCounts(records.size()).setData(records);
+        pageResult.setPageSize(1).setCounts(records.size()).setItems(records);
     }
-
 }

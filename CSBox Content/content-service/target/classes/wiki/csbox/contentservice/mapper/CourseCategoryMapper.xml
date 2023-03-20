@@ -4,18 +4,34 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="wiki.csbox.contentmodel.model.po.CourseCategory">
-        <id column="id" property="id" />
-        <result column="name" property="name" />
-        <result column="label" property="label" />
-        <result column="parentid" property="parentid" />
-        <result column="is_show" property="isShow" />
-        <result column="orderby" property="orderby" />
-        <result column="is_leaf" property="isLeaf" />
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="label" property="label"/>
+        <result column="parentid" property="parentid"/>
+        <result column="is_show" property="isShow"/>
+        <result column="orderby" property="orderby"/>
+        <result column="is_leaf" property="isLeaf"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, label, parentid, is_show, orderby, is_leaf
+        id
+        , name, label, parentid, is_show, orderby, is_leaf
     </sql>
+
+    <select id="selectTreeNode" resultType="wiki.csbox.contentmodel.model.dto.CourseCategoryTreeDto"
+            parameterType="string">
+        with recursive treeNode as (select *
+                              from course_category
+                              where id = #{id}
+                              union all
+                              select category.*
+                              from course_category as category
+                                       inner join treeNode
+                                                  on treeNode.id = category.parentid)
+        select *
+        from treeNode
+        order by treeNode.id;
+    </select>
 
 </mapper>

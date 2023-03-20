@@ -21,7 +21,7 @@ public class PageParams {
 
     // 当前记录页码：
     @NotNull
-    private Long pageNumber;
+    private Long pageNo;
 
     // 每页显示记录数：
     @NotNull

@@ -57,6 +57,4 @@ public class CourseMarket implements Serializable {
      * 有效期天数
      */
     private Integer validDays;
-
-
 }
