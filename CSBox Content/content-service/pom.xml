@@ -96,10 +96,11 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
-<!--        </dependency>-->
+        <!-- Spring Cloud Alibaba Nacos 统一配置 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -123,6 +124,7 @@
 <!--            <artifactId>feign-form</artifactId>-->
 <!--            <version>3.8.0</version>-->
 <!--        </dependency>-->
+
 <!--        <dependency>-->
 <!--            <groupId>io.github.openfeign.form</groupId>-->
 <!--            <artifactId>feign-form-spring</artifactId>-->

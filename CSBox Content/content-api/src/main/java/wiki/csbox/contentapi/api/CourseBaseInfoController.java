@@ -31,7 +31,7 @@ public class CourseBaseInfoController {
 
     @ApiOperation(value = "获取课程信息列表", tags = "课程基础信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNumber", value = "当前记录页码"),
+            @ApiImplicitParam(name = "pageNo", value = "当前记录页码"),
             @ApiImplicitParam(name = "pageSize", value = "每页显示记录数")
     })
     @ApiResponses({

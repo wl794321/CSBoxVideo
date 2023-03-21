@@ -1,0 +1,13 @@
+# 微服务配置
+spring:
+  application:
+    name: system-api
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://82.157.192.119:3306/csbox-vedio-system?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: Krian18723220402
+
+server:
+  port: 63110

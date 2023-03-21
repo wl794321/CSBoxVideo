@@ -1,4 +1,4 @@
-#微服务配置
+# 微服务配置
 spring:
   application:
     name: system-api

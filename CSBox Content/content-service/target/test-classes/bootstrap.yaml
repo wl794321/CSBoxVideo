@@ -1,0 +1,27 @@
+# 微服务配置
+spring:
+  application:
+    name: content-service
+
+  # 数据库连接信息：（配置到Nacos统一配置中心）
+  #  datasource:
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://82.157.192.119:3306/csbox-vedio-content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+  #    username: root
+  #    password: Krian18723220402
+
+  cloud:
+    nacos:
+      server-addr: 192.168.82.36:8848
+      config:
+        namespace: dev
+        group: CSBoxVideo
+        file-extension: yaml
+        refresh-enabled: true
+  profiles:
+    active: dev
+
+# 日志文件配置路径
+logging:
+  config: classpath:log4j2-dev.xml
+

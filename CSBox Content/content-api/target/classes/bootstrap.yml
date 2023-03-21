@@ -1,66 +1,87 @@
-#微服务配置
+#server:
+#  port: 8100
+
+# 微服务配置
 spring:
   application:
+    # 1.服务名（模块名称）
     name: content-api
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://82.157.192.119:3306/csbox-vedio-content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: Krian18723220402
+  # 数据库连接信息：（配置到Nacos统一配置中心）
+  #  datasource:
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://82.157.192.119:3306/csbox-vedio-content?serverTimezone=UTC&userUnicode=true&useSSL=false&
+  #    username: root
+  #    password: Krian18723220402
 
+  # Spring Cloud 配置信息：
+  # Nacos 通过namespace、group、dataid 定位一个具体的配置文件
+  cloud:
+    config:
+      # 配置本地配置最优先
+      override-none: true
+    nacos:
+      # Nacos服务地址：
+      server-addr: 192.168.82.36:8848
+      # Nacos服务发现：
+      discovery:
+        namespace: dev
+        group: CSBoxVideo
+        server-addr: ${spring.cloud.nacos.server-addr}
+        service: ${spring.application.name}
+      # Nacos统一配置：
+      config:
+        namespace: dev
+        group: CSBoxVideo
+        file-extension: yaml
+        refresh-enabled: true
+        # 扩展配置文件：
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: ${spring.cloud.nacos.config.group}
+            refresh: true
+        # 共享配置文件：
+        shared-configs:
+          # 共享日志配置文件：
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: CSBoxVideo-Comment
+            refresh: true
+          # knife4j API 在线接口文档：
+          - data-id: knife4j-${spring.profiles.active}.yaml
+            group: CSBoxVideo-Comment
+            refresh: true
+
+  # 2.环境名
+  # profiles默认为dev
+  profiles:
+    active: dev
+  # 3.配置文件的扩展名（.yml或者是.properties）
+  # 配置文件在Nacos中进行添加
+
+  # Spring Boot devtools 热部署配置：
   devtools:
     restart:
       enabled: true  #设置开启热部署
       additional-paths: src/main/java #重启目录
       exclude: WEB-INF/**
 
-server:
-  port: 8100
+  #test_config:
+  #  a: 4a
+  #  b: 4b
+  #  c: 4c
+  #  d: 4d
 
-#  cloud:
-#    nacos:
-#      server-addr: 192.168.101.65:8848
-#      discovery:
-#        namespace: dev147
-#        group: xuecheng-plus-project
-#      config:
-#        namespace: dev147
-#        group: xuecheng-plus-project
-#        file-extension: yaml
-#        refresh-enabled: true
-#        extension-configs:
-#          - data-id: content-service-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-project
-#            refresh: true
-#        shared-configs:
-#          - data-id: swagger-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-common
-#            refresh: true
-#          - data-id: logging-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-common
-#            refresh: true
-#          - data-id: freemarker-config-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-common
-#            refresh: true
-#          - data-id: feign-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-common
-#            refresh: true
-#          - data-id: redis-${spring.profiles.active}.yaml
-#            group: xuecheng-plus-common
-#            refresh: true
-  # profiles默认为dev
-#  profiles:
-#    active: dev
+  # 日志文件配置路径：
+  #logging:
+  #  config: classpath:log4j2-dev.xml
 
-#test_config:
-#  a: 4a
-#  b: 4b
-#  c: 4c
-#  d: 4d
+  # knife4j 配置：
+  #knife4j:
+  # 是否停用Knife4j文档
+  # knife4j.production false 是否开启生产环境保护策略,详情参考文档
+  # production: false
+  # 注意：要使用Knife4j提供的增强，knife4j.enable=true必须开启
+  # knife4j.enable	默认是 false     是否开启Knife4j增强模式
+  # enable: true
 
-# 日志文件配置路径
-#logging:
-#  config: classpath:log4j2-dev.xml
 
-#  version: 1.0.0
