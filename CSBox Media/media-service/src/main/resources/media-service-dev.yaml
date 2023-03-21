@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://82.157.192.119:3306/csbox-video-media?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: Krian18723220402
+  cloud:
+   config:
+    override-none: true
+
+#minio:
+#  endpoint: http://82.157.192.119:9000
+#  accessKey: minioadmin
+#  secretKey: minioadmin
+#  bucket:
+#    files: mediafiles
+#    videofiles: video
+
+#xxl:
+#  job:
+#    admin:
+#      addresses: http://192.168.101.65:8088/xxl-job-admin
+#    executor:
+#      appname: media-process-service
+#      address:
+#      ip:
+#      port: 9999
+#      logpath: /data/applogs/xxl-job/jobhandler
+#      logretentiondays: 30
+#    accessToken: default_token
+
+#videoprocess:
+# ffmpegpath: D:/soft/ffmpeg/ffmpeg.exe
+

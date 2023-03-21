@@ -1,13 +1,12 @@
-package wiki.csbox.csboxgateway;
+package wiki.csbox;
+
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CSBoxGatewayApplication {
-
+public class MediaApiApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CSBoxGatewayApplication.class, args);
+        SpringApplication.run(MediaApiApplication.class, args);
     }
-
 }

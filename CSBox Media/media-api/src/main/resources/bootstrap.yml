@@ -1,0 +1,29 @@
+#微服务配置
+spring:
+  application:
+    name: media-api
+  cloud:
+    nacos:
+      server-addr: 192.168.82.36:8848
+      discovery:
+        namespace: ${spring.profiles.active}
+        group: CSBoxVideo
+      config:
+        namespace: ${spring.profiles.active}
+        group: CSBoxVideo
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: media-service-${spring.profiles.active}.yaml
+            group: CSBoxVideo
+            refresh: true
+        shared-configs:
+          - data-id: knife4j-${spring.profiles.active}.yaml
+            group: CSBoxVideo
+            refresh: true
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: CSBoxVideo
+            refresh: true
+  profiles:
+    active: dev
+
