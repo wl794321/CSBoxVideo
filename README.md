@@ -2,7 +2,68 @@
 
 <hr/>
 
-## 工程模块：
+## 1.技术难点：
+
+### 树节点构造：
+
+- 课程信息分类树
+- 评论树
+
+### 事务失效问题：
+
+- @Transactional 注解使用 <br>
+
+<P>
+    避免使用 @Transactional 在一个方法内使用网络调用。因为通常情况下如果出现网络调用时延过长的情况，数据库在开启事务之后，数据库会维持当前数据库连接
+，长时间的占用数据库资源，极端情况可能会导致数据资源不够的情况。
+</p>
+
+- @Transactional 注解失效 <br>
+
+<p>
+    方法上已经添加了 @Transactional 注解为什么不能被事务控制？<br>
+    一个非事务方法调用同一个类一个事务方法，事务无法控制，这是为什么？<br>
+    通常我们使用Controller层调用Service层进行业务处理，这时我们一般使用的是 @Autowired 注入的Service层接口，通过使用 @Autowired 注解注入的都是代理对象。<br>
+    此时，我们如果直接调用方法是通过代理对象调用非事务方法，然后在非事务方法中由原本实例对象调用事务方法（非代理对象调用事务方法），此时非代理对象并没开启事务，
+    所以非事务方法执行过程中在异常情况下并不会执行回滚。
+</p>
+
+<p>
+    解决方案：自己把自己进行注入，然后通过自己（生成一个自己的代理对象）调用这个事务方法，使用代理对象调用事务方法，就能避免事务失效的情况。
+</p>
+
+<p>
+    PS：这里需要去了解一下M事务的 <strong>传播行为</strong> ！！！
+</p>
+
+### 大文件上传：
+- 断点续传：
+
+<p>
+    通常情况下视频文件比较大，而HTTP协议虽然本身对于传输的文件大小并没有限制，但是可能由于客户端网络情况造成传输失败的情况，如果失败后需要用户重新上传
+    ，对于用户体验来说是十分糟糕的，所以对于大型的媒体资源的上传需要支持断点续传。    
+</p>
+
+<p>
+    断点续传是指在上传和下载时，将上传和下载任务（一个文件或者压缩包）人为的划分为几个部分，每个部分采用一个线程进行上传和下载。如果过程中碰到网络故障，
+    可以从已经上传或者下载的部分开始继续上传或者下载未完成的部分，而没有必要从头开始上传和下载，节省操作时间，提高用户体验。
+</p>
+
+<img src="./static/images/Snipaste_2023-03-22_15-43-53.png" alt="断点续传">
+
+<p>
+
+<strong>分块上传流程：</strong>
+ 
+1. 前端上传前先把文件分成块
+2. 一块一块的上传文件块，上传中断后重新上传，已上传的分块不用再上传
+3. 各个分块上传完成，最后在服务端合并文件
+
+</p>
+
+<hr/>
+
+## 2.工程模块设计：
 
 ### 技术选选型：
 
@@ -20,13 +81,33 @@
 
 ### 工程模块：
 
+#### CSBox Parent
+
+整个项目父工程模块，定义所有的依赖项
+
+#### CSBox Base
+
+项目基础配置模块，包含项目的全局常量配置、全局异常处理、全局在线API文档配置、跨域问题处理
+
+#### CSBox Gateway
+
+项目服务网关，使用Spring Cloud gateway组件
+
+#### CSBox Content
+
+课程信息模块，包含对课程信息的CRUD业务
+
+#### CSBox Media
+
+媒体资源模块，包含对媒体资源的CRUD业务
+
 
 <hr/>
 
 
-## 数据库模块：
+## 3.数据库模块设计：
 
-### 视频信息模块：
+### 课程信息模块：
 
 #### csbox-video-content
 
@@ -116,3 +197,38 @@ create table course_market
     comment '课程营销信息' charset = utf8mb3;
 ```
 
+### 媒体资源信息模块：
+
+#### csbox-video-media
+
+- media-files：媒体资源信息表
+
+```sql
+-- 媒资信息 
+-- auto-generated definition
+create table media_files
+(
+    id           varchar(32)             not null comment '文件id,md5值'
+        primary key,
+    company_id   bigint                  null comment '机构ID',
+    company_name varchar(255)            null comment '机构名称',
+    filename     varchar(255)            not null comment '文件名称',
+    file_type    varchar(12)             null comment '文件类型（图片、文档，视频）',
+    tags         varchar(120)            null comment '标签',
+    bucket       varchar(128)            null comment '存储目录',
+    file_path    varchar(512)            null comment '存储路径',
+    file_id      varchar(32)             not null comment '文件id',
+    url          varchar(1024)           null comment '媒资文件访问地址',
+    username     varchar(60)             null comment '上传人',
+    create_date  datetime                null comment '上传时间',
+    change_date  datetime                null comment '修改时间',
+    status       varchar(12) default '1' null comment '状态,1:正常，0:不展示',
+    remark       varchar(32)             null comment '备注',
+    audit_status varchar(12)             null comment '审核状态',
+    audit_mind   varchar(255)            null comment '审核意见',
+    file_size    bigint                  null comment '文件大小',
+    constraint unique_fileid
+        unique (file_id) comment '文件id唯一索引 '
+)
+    comment '媒资信息' charset = utf8mb3;
+```

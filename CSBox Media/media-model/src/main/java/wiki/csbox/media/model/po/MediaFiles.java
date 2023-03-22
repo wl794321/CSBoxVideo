@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
 @TableName("media_files")
 public class MediaFiles implements Serializable {
 
@@ -118,5 +120,5 @@ public class MediaFiles implements Serializable {
      */
     private Long fileSize;
 
-//    private String timelength;
+    // private String timelength;
 }

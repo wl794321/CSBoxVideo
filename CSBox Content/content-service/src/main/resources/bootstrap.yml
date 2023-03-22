@@ -11,7 +11,7 @@ spring:
   #    password: Krian18723220402
 
   cloud:
-    nacos:
+    nacos:+
       server-addr: 192.168.82.36:8848
       config:
         namespace: dev
