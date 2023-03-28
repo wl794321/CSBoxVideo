@@ -2,11 +2,11 @@
   <el-dialog title="上传文件" :visible.sync="syncDialogVisible" @closed="handleClosedDialog">
     <!-- 数据列表 -->
     <el-table
-      class="dataList"
-      :data="fileList"
-      border
-      style="width: 100%"
-      :header-cell-style="{ textAlign: 'center' }"
+        class="dataList"
+        :data="fileList"
+        border
+        style="width: 100%"
+        :header-cell-style="{ textAlign: 'center' }"
     >
       <el-table-column prop="name" label="文件名" align="center"></el-table-column>
       <el-table-column prop="size" label="大小" align="center"></el-table-column>
@@ -22,13 +22,13 @@
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-upload
-        action="#"
-        :auto-upload="false"
-        :accept="'video/*'"
-        :show-file-list="false"
-        :on-change="handleChange"
-        :before-upload="handleBeforeUpload"
-        :http-request="handleHttpRequest"
+          action="#"
+          :auto-upload="false"
+          :accept="'video/*'"
+          :show-file-list="false"
+          :on-change="handleChange"
+          :before-upload="handleBeforeUpload"
+          :http-request="handleHttpRequest"
       >
         <el-button>添加文件</el-button>
         <!-- <el-button type="primary" @click="dialogVisible = false">上传</el-button> -->
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, PropSync } from 'vue-property-decorator'
+import {Component, Vue, PropSync} from 'vue-property-decorator'
 import {
   ElUploadInternalRawFile,
   ElUploadInternalFileDetail,
@@ -46,15 +46,15 @@ import {
 } from 'element-ui/types/upload'
 
 import * as qiniu from 'qiniu-js'
-import { Base64 } from 'js-base64'
-import { IQnParamsDTO, IVodTokenDTO } from '@/entity/media-page-list'
-import { getQnParams } from '@/api/common'
-import { getVodToken, saveMedia } from '@/api/media'
+import {Base64} from 'js-base64'
+import {IQnParamsDTO, IVodTokenDTO} from '@/entity/media-page-list'
+import {getQnParams} from '@/api/common'
+import {getVodToken, saveMedia} from '@/api/media'
 import {uploadByPieces} from '@/utils/uploadtools'
 
 @Component
 export default class MediaAddDialog extends Vue {
-  @PropSync('dialogVisible', { type: Boolean, default: false })
+  @PropSync('dialogVisible', {type: Boolean, default: false})
   syncDialogVisible!: boolean
 
   // 文档后缀名列表
@@ -75,22 +75,23 @@ export default class MediaAddDialog extends Vue {
   /**
    * 生命周期钩子
    */
-  created() {}
+  created() {
+  }
 
   /**
    * 文件状态改变时的钩子
    */
   // 文件分块上传 
   private handleChange(
-    file: ElUploadInternalFileDetail,
-    fileList: ElUploadInternalFileDetail[]
+      file: ElUploadInternalFileDetail,
+      fileList: ElUploadInternalFileDetail[]
   ) {
     this.fileList = fileList
     uploadByPieces({
       file,
       pieceSize: 5, //分片大小
       success: (data) => {
-        file.percentage = (data.num/data.chunkCount) * 100
+        file.percentage = (data.num / data.chunkCount) * 100
         console.log('success::' + data)
       },
       error: (e) => {
@@ -167,9 +168,9 @@ export default class MediaAddDialog extends Vue {
 
       // 更新上传进度
       let currentFile = this.fileList.find(
-        (item: ElUploadInternalFileDetail) => {
-          return file.uid == item.uid
-        }
+          (item: ElUploadInternalFileDetail) => {
+            return file.uid == item.uid
+          }
       )
       if (currentFile) {
         currentFile.percentage = percentage
@@ -225,10 +226,10 @@ export default class MediaAddDialog extends Vue {
         console.log('媒资上传到阿里云开始...')
         console.log(uploadInfo)
         uploader.setUploadAuthAndAddress(
-          uploadInfo,
-          vodToken.uploadAuth,
-          vodToken.uploadAddress,
-          vodToken.videoId
+            uploadInfo,
+            vodToken.uploadAuth,
+            vodToken.uploadAddress,
+            vodToken.videoId
         )
       },
       // 文件上传进度，单位：字节, 可以在这个函数中拿到上传进度并显示在页面上
@@ -239,9 +240,9 @@ export default class MediaAddDialog extends Vue {
 
         // 更新上传进度
         let currentFile = this.fileList.find(
-          (item: ElUploadInternalFileDetail) => {
-            return uploadInfo.file.uid == item.uid
-          }
+            (item: ElUploadInternalFileDetail) => {
+              return uploadInfo.file.uid == item.uid
+            }
         )
         if (currentFile) {
           currentFile.percentage = percentage
@@ -302,18 +303,18 @@ export default class MediaAddDialog extends Vue {
       cancelButtonText: '取消',
       type: 'warning'
     })
-      .then(() => {
-        this.$message({
-          type: 'success',
-          message: '移除成功!'
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '移除成功!'
+          })
         })
-      })
-      .catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消移除'
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消移除'
+          })
         })
-      })
   }
 
   /**

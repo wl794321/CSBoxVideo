@@ -2,6 +2,7 @@ package wiki.csbox.media.service;
 
 import wiki.csbox.csboxbase.model.PageParams;
 import wiki.csbox.csboxbase.model.PageResult;
+import wiki.csbox.csboxbase.model.RestResponse;
 import wiki.csbox.media.model.dto.QueryMediaParamsDto;
 import wiki.csbox.media.model.dto.UploadFileParamsDto;
 import wiki.csbox.media.model.dto.UploadFileResultDto;
@@ -46,4 +47,43 @@ public interface MediaFileService {
      * @return MediaFiles 媒体信息
      */
     MediaFiles insertMediaFilesToDb(Long companyId, String fileMD5, UploadFileParamsDto uploadFileParamsDto, String bucket_otherFiles, String objectName);
+
+    /**
+     * 检擦文件信息是否已经记录在了数据库中，数据是否已经上传的Minio中
+     *
+     * @param fileMd5 文件的MD5值
+     * @return RestResponse<Boolean>
+     */
+    RestResponse<Boolean> checkFile(String fileMd5);
+
+    /**
+     * 文集分块校验
+     *
+     * @param fileMd5    文件MD5值
+     * @param chunkIndex 分块序号
+     * @return RestResponse<Boolean>
+     */
+    RestResponse<Boolean> checkChunk(String fileMd5, int chunkIndex);
+
+    /**
+     * 分块文件上传
+     *
+     * @param fileMd5 文件MD5值
+     * @param chunk 分块序号
+     * @return RestResponse
+     */
+    RestResponse uploadChunk(String fileMd5, int chunk, byte[] bytes);
+
+    RestResponse uploadChunk(String fileMd5, int chunk, String localChunkFilePath);
+
+    /**
+     * 对对象存储服务上的分块文件进行合并
+     *
+     * @param companyId 企业ID
+     * @param fileMd5 文件的MD5值
+     * @param chunkTotal 分块总数
+     * @param uploadFileParamsDto 上传文件信息
+     * @return RestResponse
+     */
+    RestResponse  mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
 }

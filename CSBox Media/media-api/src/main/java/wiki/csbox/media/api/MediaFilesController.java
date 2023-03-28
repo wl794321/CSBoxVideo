@@ -1,6 +1,5 @@
 package wiki.csbox.media.api;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import static wiki.csbox.csboxbase.constant.FileInfoConstant.FILE_TYPE_IMAGE;
  * @description 媒资文件管理接口
  * @date 2022/9/6 11:29
  */
-@Api(value = "媒资文件管理接口", tags = "文件上传")
+@Api(value = "媒资文件管理接口", tags = "媒体资源")
 @RestController
 @RequestMapping("/media")
 public class MediaFilesController {
@@ -34,14 +33,14 @@ public class MediaFilesController {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @ApiOperation("媒资列表查询接口")
+    @ApiOperation(value = "媒资列表查询接口", tags = "媒体资源")
     @PostMapping("/files")
     public PageResult<MediaFiles> list(PageParams pageParams, @RequestBody QueryMediaParamsDto queryMediaParamsDto) {
         Long companyId = 1232141425L;
         return mediaFileService.queryMediaFiles(companyId, pageParams, queryMediaParamsDto);
     }
 
-    @ApiOperation(value = "上传图片接口", tags = "文件上传")
+    @ApiOperation(value = "上传图片接口", tags = "媒体资源")
     @PostMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile fileData) throws IOException {
         Long companyId = 1232141425L;
@@ -59,4 +58,5 @@ public class MediaFilesController {
         // 调用service上传图片
         return mediaFileService.uploadFile(companyId, uploadFileParamsDto, localFilePath);
     }
+
 }
