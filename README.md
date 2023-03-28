@@ -69,6 +69,19 @@
 
 </p>
 
+
+### 分布式任务调用：
+
+<p>
+    使用了轻量级的分布式任务调用平台：XXL-JOB
+</p>
+
+<p>
+    http://localhost:63020/xxl-job-admin/toLogin 进入登录页面，默认用户名：admin，密码：123456
+</p>
+
+<img src="./static/images/Snipaste_2023-03-28_15-43-53.png">
+
 <hr/>
 
 ## 2.工程模块设计：
