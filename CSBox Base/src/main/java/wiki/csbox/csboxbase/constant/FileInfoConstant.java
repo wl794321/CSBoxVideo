@@ -14,4 +14,6 @@ public class FileInfoConstant {
     // 上传文件类型：
     public static final String FILE_TYPE_IMAGE = "001001";
     public static final String FILE_TYPE_VIDEO = "001002";
+
+    public static final String FILE_VIDEO_AVI = "video/x-msvideo";
 }

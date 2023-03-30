@@ -27,6 +27,7 @@ import wiki.csbox.media.model.dto.QueryMediaParamsDto;
 import wiki.csbox.media.model.dto.UploadFileParamsDto;
 import wiki.csbox.media.model.dto.UploadFileResultDto;
 import wiki.csbox.media.model.po.MediaFiles;
+import wiki.csbox.media.model.po.MediaProcess;
 import wiki.csbox.media.service.MediaFileService;
 
 import java.io.*;
@@ -37,8 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static wiki.csbox.csboxbase.constant.FileInfoConstant.FILE_AUDIT_STATUS_PASS;
-import static wiki.csbox.csboxbase.constant.FileInfoConstant.FILE_STATUS_USING;
+import static wiki.csbox.csboxbase.constant.FileInfoConstant.*;
 
 /**
  * @author Krian
@@ -166,15 +166,7 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaFilesMapper.insert(mediaFiles);
 
             // 对avi视频添加到待处理任务表
-//            if (mimeType.equals("video/x-msvideo")) {
-//
-//                MediaProcess mediaProcess = new MediaProcess();
-//                BeanUtils.copyProperties(mediaFiles, mediaProcess);
-//                //设置一个状态
-//                mediaProcess.setStatus(FILE_STATUS_USING);//未处理
-//                mediaProcessMapper.insert(mediaProcess);
-//            }
-
+            addWaitingTask(mediaFiles);
         }
         return mediaFiles;
     }
@@ -226,7 +218,18 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     @Override
     public RestResponse uploadChunk(String fileMd5, int chunk, byte[] bytes) {
-        return null;
+        // 生成分块文件在对象存储上的目录：
+        String chunkFilePath = getChunkFilePath(fileMd5);
+        String chunkPath = chunkFilePath + chunk;
+        try {
+            // 上传分块文件到对象存储服务器：
+            uploadFileToMinio(bytes, bucket_videoFiles, chunkPath);
+            return RestResponse.success(true);
+        } catch (Exception e) {
+            log.debug("上传分块文件失败：{}", e.getMessage());
+            e.printStackTrace();
+            return RestResponse.validfail(false, "上传分块失败");
+        }
     }
 
     @Override
@@ -244,7 +247,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         return RestResponse.success(true);
     }
 
-    @Transactional
+    /*
     @Override
     public RestResponse mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) {
         // 分块文件所在目录：
@@ -307,6 +310,83 @@ public class MediaFileServiceImpl implements MediaFileService {
         cleanChunkFiles(chunkFilePath, chunkTotal);
         return RestResponse.success(true);
     }
+     */
+
+    @Override
+    public RestResponse mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) {
+        // 检查分块信息然后下载分块：
+        File[] chunkFiles = checkAndDownLoadChunkStatus(fileMd5, chunkTotal);
+        // 获取合并后文件拓展名：
+        String filename = uploadFileParamsDto.getFilename();
+        // 扩展名
+        String extension = filename.substring(filename.lastIndexOf("."));
+        // 获取文件类型：
+        String mimeType = getMimeType(extension);
+
+        File tempMergeFile = null;
+        try {
+            try {
+                // 创建一个临时文件作为合并文件
+                tempMergeFile = File.createTempFile("'merge'", extension);
+            } catch (IOException e) {
+                CSBoxVideoException.cast("创建临时合并文件出错");
+            }
+            // 创建合并文件的流对象
+            try (RandomAccessFile raf_write = new RandomAccessFile(tempMergeFile, "rw")) {
+                byte[] b = new byte[1024];
+                for (File file : chunkFiles) {
+                    //读取分块文件的流对象
+                    try (RandomAccessFile raf_read = new RandomAccessFile(file, "r");) {
+                        int len = -1;
+                        while ((len = raf_read.read(b)) != -1) {
+                            //向合并文件写数据
+                            raf_write.write(b, 0, len);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                CSBoxVideoException.cast("合并文件过程出错");
+            }
+
+            //校验合并后的文件是否正确
+            try {
+                FileInputStream mergeFileStream = new FileInputStream(tempMergeFile);
+                String mergeMd5Hex = DigestUtils.md5Hex(mergeFileStream);
+                if (!fileMd5.equals(mergeMd5Hex)) {
+                    log.debug("合并文件校验不通过,文件路径:{},原始文件md5:{}", tempMergeFile.getAbsolutePath(), fileMd5);
+                    CSBoxVideoException.cast("合并文件校验不通过");
+                }
+            } catch (IOException e) {
+                log.debug("合并文件校验出错,文件路径:{},原始文件md5:{}", tempMergeFile.getAbsolutePath(), fileMd5);
+                CSBoxVideoException.cast("合并文件校验出错");
+            }
+
+
+            // 拿到合并文件在minio的存储路径
+            String mergeFilePath = getFilePathMd5(fileMd5, extension);
+            // 将合并后的文件上传到文件系统
+            uploadFileToMinio(tempMergeFile.getAbsolutePath(), mimeType, bucket_videoFiles, mergeFilePath);
+
+            //将文件信息入库保存
+            uploadFileParamsDto.setFileSize(tempMergeFile.length());//合并文件的大小
+            insertMediaFilesToDb(companyId, fileMd5, uploadFileParamsDto, bucket_videoFiles, mergeFilePath);
+
+            return RestResponse.success(true);
+        } finally {
+            // 删除临时分块文件
+            if (chunkFiles != null) {
+                for (File chunkFile : chunkFiles) {
+                    if (chunkFile.exists()) {
+                        chunkFile.delete();
+                    }
+                }
+            }
+            // 删除合并的临时文件
+            if (tempMergeFile != null) {
+                tempMergeFile.delete();
+            }
+        }
+    }
 
     /**
      * 清除分块文件
@@ -329,7 +409,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         results.forEach(item -> {
             try {
                 DeleteError deleteError = item.get();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -433,6 +513,37 @@ public class MediaFileServiceImpl implements MediaFileService {
         return false;
     }
 
+    public void uploadFileToMinio(byte[] bytes, String bucket, String objectName) {
+        // 设置媒体资源默认类型（默认未知二进制流）：
+        String contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        // 根据文件后缀，设置新的文件类型：
+        if (objectName.indexOf(".") >= 0) {
+            //取objectName中的扩展名
+            String extension = objectName.substring(objectName.lastIndexOf("."));
+            ContentInfo extensionMatch = ContentInfoUtil.findExtensionMatch(extension);
+            if (extensionMatch != null) {
+                contentType = extensionMatch.getMimeType();
+            }
+        }
+
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(objectName)
+                    // InputStream stream, long objectSize 对象大小, long partSize 分片大小(-1表示5M,最大不要超过5T，最多10000)
+                    .stream(byteArrayInputStream, byteArrayInputStream.available(), -1)
+                    .contentType(contentType)
+                    .build();
+            //上传到minio
+            minioClient.putObject(putObjectArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.debug("上传文件到文件系统出错:{}", e.getMessage());
+            CSBoxVideoException.cast("上传文件到文件系统出错");
+        }
+    }
+
     /**
      * 根据日志获取默认的Bucket目录名
      *
@@ -479,5 +590,59 @@ public class MediaFileServiceImpl implements MediaFileService {
      */
     private String getFilePathMd5(String fileMd5, String fileExt) {
         return fileMd5.charAt(0) + "/" + fileMd5.charAt(1) + "/" + fileMd5 + "/" + fileMd5 + fileExt;
+    }
+
+    /**
+     * 添加待处理任务
+     *
+     * @param mediaFiles 媒体文件信息
+     */
+    private void addWaitingTask(MediaFiles mediaFiles) {
+        // 获取文件的扩展名：
+        String filename = mediaFiles.getFilename();
+        String extension = filename.substring(filename.lastIndexOf('.'));
+        String mimeType = getMimeType(extension);
+        // 判断文件是否是AVI格式的视频：
+        if (mimeType.equals(FILE_VIDEO_AVI)) {
+            // 封装视频处理信息：
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles, mediaProcess);
+            // 对视频文件状态设置一个状态（默认未处理）
+            mediaProcess.setStatus(FILE_STATUS_USING);
+            // 将文件记录写入到任务处理表（media_process）
+            int flag = mediaProcessMapper.insert(mediaProcess);
+        }
+    }
+
+    /**
+     * 下载分块
+     *
+     * @param fileMd5    文件MD5值
+     * @param chunkTotal 分块数量
+     * @return java.io.File[] 分块文件数组
+     */
+    private File[] checkAndDownLoadChunkStatus(String fileMd5, int chunkTotal) {
+        // 得到分块文件所在目录
+        String chunkFileFolderPath = getChunkFilePath(fileMd5);
+        // 分块文件数组
+        File[] chunkFiles = new File[chunkTotal];
+        // 开始下载
+        for (int i = 0; i < chunkTotal; i++) {
+            // 分块文件的路径
+            String chunkFilePath = chunkFileFolderPath + i;
+            // 分块文件
+            File chunkFile = null;
+            try {
+                chunkFile = File.createTempFile("chunk", null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                CSBoxVideoException.cast("创建分块临时文件出错" + e.getMessage());
+            }
+            // 下载分块文件
+            downloadFileFromMinIO(chunkFile, bucket_videoFiles, chunkFilePath);
+            chunkFiles[i] = chunkFile;
+
+        }
+        return chunkFiles;
     }
 }

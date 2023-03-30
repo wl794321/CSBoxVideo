@@ -32,9 +32,7 @@ public class BigFilesController {
 
     @ApiOperation(value = "文件上传前检查文件")
     @PostMapping("/upload/checkfile")
-    public RestResponse<Boolean> checkFile(
-            @RequestParam("fileMd5") String fileMd5
-    ) throws Exception {
+    public RestResponse<Boolean> checkFile(@RequestParam("fileMd5") String fileMd5) throws Exception {
         return mediaFileService.checkFile(fileMd5);
     }
 
@@ -50,14 +48,7 @@ public class BigFilesController {
     public RestResponse uploadChunk(@RequestParam("file") MultipartFile file,
                                     @RequestParam("fileMd5") String fileMd5,
                                     @RequestParam("chunk") int chunk) throws Exception {
-        // 创建一个临时文件：
-        File tempFile = File.createTempFile("minio", ".temp");
-        file.transferTo(tempFile);
-        // 获取文件路径：
-        String localFilePath = tempFile.getAbsolutePath();
-
-        return mediaFileService.uploadChunk(fileMd5, chunk, localFilePath);
-
+        return mediaFileService.uploadChunk(fileMd5, chunk, file.getBytes());
     }
 
     @ApiOperation(value = "合并文件")
@@ -73,5 +64,4 @@ public class BigFilesController {
         uploadFileParamsDto.setTags("课程文件");
         return mediaFileService.mergeChunks(companyId, fileMd5, chunkTotal, uploadFileParamsDto);
     }
-
 }

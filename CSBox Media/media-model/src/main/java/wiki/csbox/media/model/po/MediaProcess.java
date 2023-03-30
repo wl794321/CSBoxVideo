@@ -1,21 +1,22 @@
 package wiki.csbox.media.model.po;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author itcast
+ * 待处理文件信息实体类
  */
 @Data
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
 @TableName("media_process")
 public class MediaProcess implements Serializable {
 
@@ -71,8 +72,4 @@ public class MediaProcess implements Serializable {
      * 失败次数
      */
     private int failCount;
-
-
-
-
 }
