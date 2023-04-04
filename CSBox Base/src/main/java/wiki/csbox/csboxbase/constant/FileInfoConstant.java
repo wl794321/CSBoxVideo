@@ -7,7 +7,13 @@ package wiki.csbox.csboxbase.constant;
  * @date 2023/3/22 0022 11:10
  */
 public class FileInfoConstant {
+
+    // 文件使用状态：
     public static final String FILE_STATUS_USING = "1";
+
+    // 文件处理状态：
+    public static final String FILE_STATUS_PROCESS_SUCCESS = "2";
+    public static final String FILE_STATUS_PROCESS_FAIL = "3";
 
     public static final String FILE_AUDIT_STATUS_PASS = "002003";
 

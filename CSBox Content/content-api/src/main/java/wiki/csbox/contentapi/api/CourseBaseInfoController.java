@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import wiki.csbox.contentmodel.model.dto.AddCourseDto;
 import wiki.csbox.contentmodel.model.dto.CourseBaseInfoDto;
+import wiki.csbox.contentmodel.model.dto.EditCourseDto;
 import wiki.csbox.contentmodel.model.dto.QueryCourseParamsDto;
 import wiki.csbox.contentmodel.model.po.CourseBase;
 import wiki.csbox.contentservice.service.CourseBaseInfoService;
@@ -53,6 +54,7 @@ public class CourseBaseInfoController {
         Long id = 1232141425L;
         return courseBaseInfoService.createCourseBase(id, addCourseDto);
     }
+
 //    public CourseBaseInfoDto create(@RequestBody @Validated({
 //            ValidationGroups.Insert.class,
 //            ValidationGroups.Update.class
@@ -61,4 +63,20 @@ public class CourseBaseInfoController {
 //        Long id = 1232141425L;
 //        return courseBaseInfoService.createCourseBase(id, addCourseDto);
 //    }
+
+    @ApiOperation(value = "根据ID获取课程信息", tags = "课程基础信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "courseId", value = "课程ID")
+    })
+    @GetMapping("/course/{courseId}")
+    public CourseBaseInfoDto getById(@PathVariable("courseId") Long courseId) {
+        return courseBaseInfoService.getCourseBaseInfo(courseId);
+    }
+
+    @ApiOperation(value = "修改课程信息", tags = "课程基础信息")
+    @PutMapping("/course")
+    public CourseBaseInfoDto modify(@RequestBody @Validated(ValidationGroups.Update.class)EditCourseDto editCourseDto) {
+        Long id = 1232141425L;
+        return courseBaseInfoService.updateCourseBase(id, editCourseDto);
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wiki.csbox.contentmodel.model.dto.AddCourseDto;
 import wiki.csbox.contentmodel.model.dto.CourseBaseInfoDto;
+import wiki.csbox.contentmodel.model.dto.EditCourseDto;
 import wiki.csbox.contentmodel.model.dto.QueryCourseParamsDto;
 import wiki.csbox.contentmodel.model.po.CourseBase;
 import wiki.csbox.contentmodel.model.po.CourseCategory;
@@ -175,7 +176,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
      * @param courseId 课程信息Id
      * @return CourseBaseInfoDto 课程详细信息（课程基本信息 + 课程营销信息）
      */
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId) {
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId) {
         // 从课程基本信息查询：
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if (courseBase == null) {
@@ -194,5 +195,34 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         courseBaseInfoDto.setMtName(mtCategory.getName()).setStName(stCategory.getName());
 
         return courseBaseInfoDto;
+    }
+
+    @Transactional
+    @Override
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto) {
+        Long courseId = editCourseDto.getId();
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (courseBase == null) {
+            CSBoxVideoException.cast("课程信息不存在！");
+        }
+        // 数据合法性校验，当前机构只能修改当前机构的课程信息：
+        if (!companyId.equals(courseBase.getCompanyId())) {
+            CSBoxVideoException.cast("机构ID非法，不允许修改其他机构课程信息！");
+        }
+        // 跟新课程基本信息：
+        BeanUtils.copyProperties(editCourseDto, courseBase);
+        courseBase.setChangeDate(LocalDateTime.now());
+        int b = courseBaseMapper.updateById(courseBase);
+        if (b <= 0) {
+            CSBoxVideoException.cast("更新课程信息失败!");
+        }
+        // 更新课程营销信息：
+        CourseMarket courseMarket = new CourseMarket();
+        BeanUtils.copyProperties(editCourseDto, courseMarket);
+        int i = courseMarketMapper.updateById(courseMarket);
+        if (i <= 0) {
+            CSBoxVideoException.cast("更新课程信息失败!");
+        }
+        return getCourseBaseInfo(courseId);
     }
 }

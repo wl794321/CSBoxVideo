@@ -8,6 +8,8 @@ import wiki.csbox.media.model.dto.UploadFileParamsDto;
 import wiki.csbox.media.model.dto.UploadFileResultDto;
 import wiki.csbox.media.model.po.MediaFiles;
 
+import java.io.File;
+
 /**
  * @author Krian
  * @version 1.0
@@ -86,4 +88,10 @@ public interface MediaFileService {
      * @return RestResponse
      */
     RestResponse  mergeChunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
+
+    File downloadFileFromMinIO(String bucket, String objectName);
+
+    File downloadFileFromMinIO(File file, String bucket, String objectName);
+
+    boolean uploadFileToMinio(String localFilePath, String mimeType, String bucket, String objectName);
 }

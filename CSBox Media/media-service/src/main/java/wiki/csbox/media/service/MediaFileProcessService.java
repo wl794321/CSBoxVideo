@@ -29,4 +29,15 @@ public interface MediaFileProcessService {
      * @return true：开启任务成功；false：开日任务失败
      */
     boolean startTask(long id);
+
+    /**
+     * 记录视频任务调度处理状态（写入数据操作信息）
+     *
+     * @param taskId   任务ID
+     * @param status   状态
+     * @param fileId   文件ID
+     * @param url      文件路径
+     * @param errorMsg 错误信息
+     */
+    void saveProcessFinishStatus(Long taskId, String status, String fileId, String url, String errorMsg);
 }

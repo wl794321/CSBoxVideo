@@ -42,6 +42,7 @@
     </properties>
 
     <dependencyManagement>
+        <!-- SpringBoot 依赖 -->
         <dependencies>
             <dependency>
                 <groupId>org.springframework.boot</groupId>

@@ -1,6 +1,8 @@
 package wiki.csbox.media.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 import wiki.csbox.media.model.po.MediaProcessHistory;
 
 /**
@@ -10,6 +12,7 @@ import wiki.csbox.media.model.po.MediaProcessHistory;
  *
  * @author itcast
  */
+@Repository
 public interface MediaProcessHistoryMapper extends BaseMapper<MediaProcessHistory> {
 
 }

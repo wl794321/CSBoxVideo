@@ -439,7 +439,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         return null;
     }
 
-    private File downloadFileFromMinIO(String bucket, String objectName) {
+    public File downloadFileFromMinIO(String bucket, String objectName) {
         // 创建一个临时文件：
         File minioFile = null;
         FileOutputStream fileOutputStream = null;
